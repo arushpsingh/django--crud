@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-class StudentSerializer(serializers.Serialzer):
-    name = models.CharField(max_length=20)
-    age = models.IntegerField()
-    city = models.CharField(max_length=20)
+class StudentSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=20)
+    age = serializers.IntegerField()
+    city = serializers.CharField(max_length=20)
