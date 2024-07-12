@@ -6,19 +6,12 @@ from .serializers import StudentSerializer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse, JsonResponse
 from rest_framework.exceptions import ParseError
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
+@csrf_exempt
 def student_api(request):
-    if not request.body:
-            return JsonResponse({'error': 'Request body is empty'}, status=400)
-        
-    try:
-        stream = io.BytesIO(request.body)
-        python_data = JSONParser().parse(stream)
-    except ParseError as e:
-        return JsonResponse({'error': str(e)}, status=400)
-    
     if request.method == 'GET':
         json_data = request.body
         stream = io.BytesIO(json_data)
@@ -34,4 +27,19 @@ def student_api(request):
         student = Student.objects.all()
         serializer = StudentSerializer(student, many=True)
         json_data = JSONRenderer().render(serializer.data)
+        return HttpResponse(json_data, content_type='application/json')
+    
+    if request.method == 'POST':
+        json_data = request.body
+        stream = io.BytesIO(json_data)
+        python_data = JSONParser().parse(stream)
+        serializer = StudentSerializer(data = python_data)
+
+        if serializer.is_valid():
+            serializer.save()
+            res = { 'msg' : "Data created" }
+            json_data = JSONRenderer().render(res)
+            return HttpResponse(json_data, content_type='application/json')
+        
+        json_data = JSONRenderer().render(serializer.errors)
         return HttpResponse(json_data, content_type='application/json')
