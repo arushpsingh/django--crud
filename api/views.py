@@ -14,23 +14,6 @@ import json
 
 @csrf_exempt
 def student_api(request):
-    # if request.method == 'GET':
-    #     json_data = request.body
-    #     stream = io.BytesIO(json_data)
-    #     python_data = JSONParser().parse(stream)
-    #
-    #     id = python_data.get('id', None)
-    #     if id is not None:
-    #         student = Student.objects.get(id=id)
-    #         serializer = StudentSerializer(student)
-    #         json_data = JSONRenderer().render(serializer.data)
-    #         return HttpResponse(json_data, content_type='application/json')
-    #
-    #     student = Student.objects.all()
-    #     serializer = StudentSerializer(student, many=True)
-    #     json_data = JSONRenderer().render(serializer.data)
-    #     return HttpResponse(json_data, content_type='application/json')
-
     if request.method == 'GET':
         id = request.GET.get('id', None)
         if id is not None:
@@ -79,7 +62,7 @@ def student_api(request):
             return JsonResponse({ 'msg': 'Data updated' }, status=200)
 
         return JsonResponse(serializer.errors, status=400)
-    
+
     if request.method == 'DELETE':
         try:
             json_data = json.loads(request.body)
